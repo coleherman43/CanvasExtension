@@ -1,3 +1,4 @@
+// This is where we make the interactive JS bits for the actual extension interface
 document.addEventListener("DOMContentLoaded", () => {
     const saveButton = document.getElementById("saveToken");
     const tokenInput = document.getElementById("apiToken");
