@@ -1,24 +1,43 @@
 // This is where the classes for storing data are defined
 class Course {
-    constructor(name, assignments = []) {
+    constructor(name, id) {
       this.name = name;
-      this.assignments = assignments;
+      this.id = id;
+      this.assignments = [];
     }
   
-    // Add methods if needed, e.g., for sorting or filtering assignments
     addAssignment(assignment) {
       this.assignments.push(assignment);
+    }
+  
+    removeAssignment(assignmentId) {
+      this.assignments = this.assignments.filter(assignment => assignment.id !== assignmentId);
     }
   }
   
   class Assignment {
-    constructor(title, dueDate, submissionLink, links=[]) {
+    constructor(title, dueDate, grade, id) {
       this.title = title;
       this.dueDate = dueDate;
-      this.submissionLink = submissionLink;
-      this.links = links;
+      this.grade = grade;
+      this.id = id;
     }
   }
   
-  export { Course, Assignment };
+  class CanvasData {
+    constructor() {
+      this.courses = [];
+    }
   
+    addCourse(course) {
+      this.courses.push(course);
+    }
+  
+    getCourseById(courseId) {
+      return this.courses.find(course => course.id === courseId);
+    }
+  
+    // Other methods to manage courses and assignments can be added here.
+  }
+  
+  export {CanvasData, Course, Assignment};
