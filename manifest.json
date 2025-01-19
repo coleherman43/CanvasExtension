@@ -17,9 +17,9 @@
       "https://*.instructure.com/*" 
     ],
     "icons": {
-    "16": "logo.png",
-    "48": "logo.png",
-    "128": "logo.png"
+    "16": "./images/logo.png",
+    "48": "./images/logo.png",
+    "128": "./images/logo.png"
     }
   }
   
