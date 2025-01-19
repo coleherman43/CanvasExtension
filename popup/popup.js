@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("Fetch Data button clicked");
         fetchCanvasData();
     });
-  
+    
     // Auto-fetch on load
     chrome.storage.local.get("apiToken", (result) => {
         if (result.apiToken) {
