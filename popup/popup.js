@@ -2,7 +2,6 @@
 
 import {Course, Assignment, CanvasData} from '../data.js';
 console.log("Running CanvasExtension...\n");
-// popup.js
 
 document.addEventListener("DOMContentLoaded", () => {
     const saveButton = document.getElementById("saveToken");
@@ -27,8 +26,9 @@ document.addEventListener("DOMContentLoaded", () => {
   
   // Function to fetch Canvas data and store in the classes
   async function fetchCanvasData() {
-    const API_URL = "https://canvas.uoregon.edu/api/v1/courses";  // Replace with your Canvas domain
+    const API_URL = "https://canvas.uoregon.edu/api/v1/courses";  // Get courses first
     console.log("Canvas Data Fetch initiated...\n");
+  
     // Retrieve the token from Chrome storage
     chrome.storage.local.get("apiToken", (result) => {
       const apiToken = result.apiToken;
@@ -51,24 +51,22 @@ document.addEventListener("DOMContentLoaded", () => {
           return response.json();
         })
         .then((data) => {
-          console.log(data); // Handle the fetched data here
+          console.log("Fetched Canvas Data:", data); // Log the fetched course data
   
-          // Create instances of your classes with the fetched data
           const canvasData = new CanvasData();
+  
+          // Loop over courses and fetch assignments for each one
           data.forEach(courseData => {
             const course = new Course(courseData.id, courseData.name);
   
-            // Assuming each course contains assignments in the response:
-            courseData.assignments.forEach(assignmentData => {
-              const assignment = new Assignment(assignmentData.id, assignmentData.name, assignmentData.due_at);
-              course.addAssignment(assignment);
-            });
+            // Now fetch assignments for each course
+            fetchAssignmentsForCourse(courseData.id, apiToken, course);
   
             canvasData.addCourse(course);
           });
   
-          // At this point, `canvasData` holds all the courses and assignments in your classes.
-          console.log(canvasData);  // You can now use the canvasData object for testing or other purposes
+          // At this point, `canvasData` holds all the courses (with no assignments yet)
+          console.log(canvasData);  // For testing
         })
         .catch((error) => {
           console.error("Error fetching Canvas data:", error);
@@ -76,3 +74,37 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
   
+  // Function to fetch assignments for a specific course
+  function fetchAssignmentsForCourse(courseId, apiToken, course) {
+    const ASSIGNMENTS_URL = `https://canvas.uoregon.edu/api/v1/courses/${courseId}/assignments`;  // Get assignments for the course
+  
+    fetch(ASSIGNMENTS_URL, {
+      headers: {
+        Authorization: `Bearer ${apiToken}`,
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((assignmentsData) => {
+        console.log(`Assignments for Course ${courseId}:`, assignmentsData);
+  
+        // Add assignments to course
+        assignmentsData.forEach(assignmentData => {
+          const assignment = new Assignment(assignmentData.id, assignmentData.name, assignmentData.due_at);
+          course.addAssignment(assignment);
+        });
+  
+        console.log(course); // To see the course with assignments
+      })
+      .catch((error) => {
+        console.error(`Error fetching assignments for course ${courseId}:`, error);
+      });
+  }
+  
+  
+
+
