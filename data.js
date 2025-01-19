@@ -13,6 +13,10 @@ class Course {
     removeAssignment(assignmentId) {
       this.assignments = this.assignments.filter(assignment => assignment.id !== assignmentId);
     }
+
+    getAssignments() {
+        return this.assignments;
+    }
 }
   
 class Assignment {
@@ -74,11 +78,6 @@ class CanvasData {
 
     removeCourse(courseId) {
         this.courses = this.courses.filter(course => course.id !== courseId);
-    }
-    
-    getAssignmentsForCourse(courseId) {
-        const course = this.getCourseById(courseId);
-        return course ? course.assignments : [];
     }
 }
   
