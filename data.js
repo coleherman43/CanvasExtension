@@ -37,17 +37,25 @@ class Assignment {
     }
 
     removeMaterial(materialId) {
-        this.materials.filter(material => material.id != materialId);
+        this.materials = this.materials.filter(material => material.id != materialId);
     }
 
 }
   
 class Material {
-    constructor(link, title, id) {
+    constructor(link, title) {
+        if (!/^https?:\/\/.+$/.test(link)) {
+            throw new Error("Invalid link format");
+        }
         this.link = link;
         this.title = title;
-        this.id = id;
+        this.id = generateId();
     }
+
+    static generateId() {
+        return `mat_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    }
+    
 }
   
 
@@ -64,6 +72,14 @@ class CanvasData {
       return this.courses.find(course => course.id === courseId);
     }
 
+    removeCourse(courseId) {
+        this.courses = this.courses.filter(course => course.id !== courseId);
+    }
+    
+    getAssignmentsForCourse(courseId) {
+        const course = this.getCourseById(courseId);
+        return course ? course.assignments : [];
+    }
 }
   
 
