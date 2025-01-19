@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
   // Function to fetch Canvas data and store in the classes
 async function fetchCanvasData() {
-    const API_URL = "https://canvas.uoregon.edu/api/v1/courses";  // Get courses first
+    const API_URL = "https://canvas.uoregon.edu/api/v1/courses?enrollment_state=active";  // Get courses first
     console.log("Canvas Data Fetch initiated...\n");
   
     // Retrieve the token from Chrome storage
