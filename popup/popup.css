@@ -214,7 +214,7 @@ button:hover {
 .add-material-button {
     margin-left: 5px;
     padding: 5px 10px;
-    background-color: #007bff;
+    background-color: #000000;
     color: white;
     border: none;
     border-radius: 3px;
@@ -222,5 +222,5 @@ button:hover {
 }
 
 .add-material-button:hover {
-    background-color: #0056b3;
+    background-color: #757575;
 }
