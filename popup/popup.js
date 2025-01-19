@@ -129,13 +129,15 @@ function fetchAssignmentsForCourse(courseId, apiToken, course) {
 }
   
 function populateDivs() {
-    populateClasses();
+    populateCourses();
     populateAssignments();
     populateMaterials();
 }
 
-function populateClasses() {
-
+function populateCourses() {
+    canvasData.course.forEach(courseData => {
+        
+    })
 }
 
 function populateAssignments() {
@@ -143,5 +145,5 @@ function populateAssignments() {
 }
 
 function populateMaterials() {
-    
+
 }
