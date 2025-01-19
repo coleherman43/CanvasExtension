@@ -1,0 +1,21 @@
+table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  th, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+  }
+  .course-button, .assignment-button {
+    display: block;
+    width: 100%;
+    padding: 8px;
+    text-align: left;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    cursor: pointer;
+  }
+  .course-button:hover, .assignment-button:hover {
+    background-color: #e0e0e0;
+  }

@@ -83,6 +83,10 @@ class CanvasData {
     removeCourse(courseId) {
         this.courses = this.courses.filter(course => course.id !== courseId);
     }
+
+    getCourses() {
+        return this.courses;
+      }
 }
   
 
