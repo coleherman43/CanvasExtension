@@ -1,13 +1,20 @@
 table {
     width: 100%;
     border-collapse: collapse;
-  }
-  th, td {
+    margin-bottom: 20px; /* Add margin for better spacing */
+}
+
+th, td {
     border: 1px solid #ccc;
     padding: 8px;
     text-align: left;
-  }
-  .course-button, .assignment-button {
+}
+
+th {
+    background-color: #f0f0f0;
+}
+
+.course-button, .assignment-button {
     display: block;
     width: 100%;
     padding: 8px;
@@ -15,7 +22,25 @@ table {
     background-color: #f0f0f0;
     border: 1px solid #ccc;
     cursor: pointer;
-  }
-  .course-button:hover, .assignment-button:hover {
+}
+
+.course-button:hover, .assignment-button:hover {
     background-color: #e0e0e0;
-  }
+}
+
+ul {
+    padding-left: 20px;
+}
+
+li {
+    list-style-type: none;
+}
+
+a {
+    text-decoration: none;
+    color: #007bff;
+}
+
+a:hover {
+    text-decoration: underline;
+}

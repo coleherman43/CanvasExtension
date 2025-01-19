@@ -91,9 +91,9 @@ async function fetchCanvasData() {
           });
   
           // At this point, `canvasData` holds all the courses (with no assignments yet)
-          console.log(canvasData);  // For testing
+            console.log(canvasData);  // For testing
           // Pass the canvasData to renderCourses to display the data
-          displayCanvasData(canvasData);
+            renderCourses(canvasData);
         })
         .catch((error) => {
           console.error("Error fetching Canvas data:", error);
@@ -132,71 +132,72 @@ function fetchAssignmentsForCourse(courseId, apiToken, course) {
     });
 }
   
-// Function to render all courses
+// Function to render all courses as a 2x2 table
 function renderCourses(canvasData) {
     const coursesContainer = document.getElementById("courseTab");
     coursesContainer.innerHTML = ""; // Clear the container before rendering
 
-    canvasData.courses.forEach(course => {
-        const courseElement = createCourseElement(course);
-        coursesContainer.appendChild(courseElement);
+    // Create a table for courses
+    const table = document.createElement("table");
+    const tbody = document.createElement("tbody");
+
+    // Loop through courses and create table rows
+    let row;
+    canvasData.courses.forEach((course, index) => {
+        // Start a new row for every 2 courses
+        if (index % 2 === 0) {
+            row = document.createElement("tr");
+        }
+
+        // Create a cell for each course
+        const cell = document.createElement("td");
+        const courseButton = document.createElement("button");
+        courseButton.textContent = course.id;
+        courseButton.classList.add("course-button");
+        
+        // Add event listener to each button
+        courseButton.addEventListener("click", () => {
+            displayAssignments(course);  // Show assignments for clicked course
+        });
+
+        cell.appendChild(courseButton);
+        row.appendChild(cell);
+
+        // Append row to table when we have 2 courses
+        if ((index + 1) % 2 === 0 || index === canvasData.courses.length - 1) {
+            tbody.appendChild(row);
+        }
     });
+
+    table.appendChild(tbody);
+    coursesContainer.appendChild(table);
 }
 
-// Function to render a single course and its assignments
-function createCourseElement(course) {
-    const courseDiv = document.createElement("div");
-    courseDiv.classList.add("course");
+// Function to display assignments for a clicked course
+function displayAssignments(course) {
+    const assignmentsContainer = document.getElementById("assignTab");
+    assignmentsContainer.innerHTML = "";  // Clear previous content
 
-    // Create the course title
-    const courseTitle = document.createElement("h3");
-    courseTitle.textContent = course.id;
-    courseDiv.appendChild(courseTitle);
+    const assignmentsHeader = document.createElement("h2");
+    assignmentsHeader.textContent = `Assignments for ${course.name}`;
+    assignmentsContainer.appendChild(assignmentsHeader);
 
-    // Create a container for assignments
-    const assignmentsContainer = document.createElement("div");
-    assignmentsContainer.classList.add("assignTab");
+    // Create a list of assignments
+    const assignmentsList = document.createElement("ul");
     course.assignments.forEach(assignment => {
-        const assignmentElement = createAssignmentElement(assignment);
-        assignmentsContainer.appendChild(assignmentElement);
+        const assignmentItem = document.createElement("li");
+        assignmentItem.textContent = `${assignment.title} - Due: ${assignment.dueDate}`;
+        assignmentsList.appendChild(assignmentItem);
     });
 
-    courseDiv.appendChild(assignmentsContainer);
-
-    return courseDiv;
+    assignmentsContainer.appendChild(assignmentsList);
 }
 
-// Function to render a single assignment
-function createAssignmentElement(assignment) {
-    const assignmentDiv = document.createElement("div");
-    assignmentDiv.classList.add("assignment");
 
-    // Add assignment title
-    const assignmentTitle = document.createElement("h4");
-    assignmentTitle.textContent = assignment.title;
-    assignmentDiv.appendChild(assignmentTitle);
-
-    // Add assignment due date
-    const dueDate = document.createElement("p");
-    dueDate.textContent = `Due: ${assignment.dueDate}`;
-    assignmentDiv.appendChild(dueDate);
-
-    // Add assignment points
-    const points = document.createElement("p");
-    points.textContent = `Points Possible: ${assignment.value}`;
-    assignmentDiv.appendChild(points);
-
-    // Add materials
-    const materialsList = createMaterialsList(assignment);
-    assignmentDiv.appendChild(materialsList);
-
-    return assignmentDiv;
-}
-
-// Function to create materials list
+// Function to create materials list for each assignment
 function createMaterialsList(assignment) {
     const materialsList = document.createElement("ul");
-    
+
     assignment.materials.forEach(material => {
         const materialItem = document.createElement("li");
         const materialLink = document.createElement("a");
@@ -207,9 +208,4 @@ function createMaterialsList(assignment) {
     });
 
     return materialsList;
-}
-
-// Call this function when the data is fetched and ready
-function displayCanvasData(canvasData) {
-    renderCourses(canvasData);
 }
