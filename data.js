@@ -25,7 +25,7 @@ class Assignment {
         this.dueDate = dueDate;
         this.value = value;
         // to differentiate courses with the same title
-        this.id = generateId();
+        this.id = Assignment.generateId();
         // to update as we add links to relevant sites
         this.materials = [];
         // for the submission link
@@ -57,7 +57,7 @@ class Material {
         }
         this.link = link;
         this.title = title;
-        this.id = generateId();
+        this.id = Material.generateId();
     }
 
     static generateId() {
