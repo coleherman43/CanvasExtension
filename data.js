@@ -20,12 +20,12 @@ class Course {
 }
   
 class Assignment {
-    constructor(title, dueDate, value, id) {
+    constructor(title, dueDate, value) {
         this.title = title;
         this.dueDate = dueDate;
         this.value = value;
         // to differentiate courses with the same title
-        this.id = id;
+        this.id = generateId();
         // to update as we add links to relevant sites
         this.materials = [];
         // for the submission link
@@ -42,6 +42,10 @@ class Assignment {
 
     removeMaterial(materialId) {
         this.materials = this.materials.filter(material => material.id != materialId);
+    }
+
+    static generateId() {
+        return `mat_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     }
 
 }
