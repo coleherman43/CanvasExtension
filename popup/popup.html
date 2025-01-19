@@ -1,14 +1,44 @@
 <!DOCTYPE html>
 <html>
-  <body>
-    <h1>Hello Extensions</h1>
-    <div>
-        <label for="apiToken">Enter API Token:</label>
-        <input type="password" id="apiToken" placeholder="Paste token here" />
-        <button id="saveToken">Save Token</button>
-        <button id="fetchData">Fetch Data</button>
-    </div>
-    <script src="popup.js" type="module"></script>
-
-  </body>
+<head>
+  <title>Canvas Extension</title>
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+    .course-button, .assignment-button {
+      display: block;
+      width: 100%;
+      padding: 8px;
+      text-align: left;
+      background-color: #f0f0f0;
+      border: 1px solid #ccc;
+      cursor: pointer;
+    }
+    .course-button:hover, .assignment-button:hover {
+      background-color: #e0e0e0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Canvas Extension</h1>
+  <div>
+    <label for="apiToken">Enter API Token:</label>
+    <input type="password" id="apiToken" placeholder="Paste token here" />
+    <button id="saveToken">Save Token</button>
+  </div>
+  
+  <!-- Container for dynamically created table -->
+  <div id="tableContainer">
+    <!-- The table will be dynamically inserted here -->
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
 </html>
