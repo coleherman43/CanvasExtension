@@ -5,47 +5,44 @@ console.log("Running CanvasExtension...\n");
 
 document.addEventListener("DOMContentLoaded", () => {
     const saveButton = document.getElementById("saveToken");
+    const fetchButton = document.getElementById("fetchData");
     const tokenInput = document.getElementById("apiToken");
   
-    // Save the API token to Chrome storage
-    saveButton.addEventListener("click", () => {
-      const apiToken = tokenInput.value.trim();
-      if (apiToken) {
-        chrome.storage.local.set({ apiToken }, () => {
-          alert("API Token saved securely!");
-          tokenInput.value = ""; // Clear the input field
-        });
-      } else {
-        alert("Please enter a valid token!");
-      }
+    // Initially hide the Fetch Data button
+    fetchButton.style.display = "none";
+  
+    // Check if a token is already saved and adjust Fetch Data button visibility
+    chrome.storage.local.get("apiToken", (result) => {
+        if (result.apiToken) {
+            fetchButton.style.display = "block"; // Show the Fetch Data button if the token exists
+        }
     });
   
-    // Fetch Canvas data when the popup is loaded
-    fetchCanvasData();
-  });
-
-  document.addEventListener("DOMContentLoaded", () => {
-    const saveButton = document.getElementById("saveToken");
-    const fetchButton = document.getElementById("fetchData"); // Fetch button
-    const tokenInput = document.getElementById("apiToken");
-  
     // Save the API token to Chrome storage
     saveButton.addEventListener("click", () => {
-      const apiToken = tokenInput.value.trim();
-      if (apiToken) {
-        chrome.storage.local.set({ apiToken }, () => {
-          alert("API Token saved securely!");
-          tokenInput.value = ""; // Clear the input field
-        });
-      } else {
-        alert("Please enter a valid token!");
-      }
+        const apiToken = tokenInput.value.trim();
+        if (apiToken) {
+            chrome.storage.local.set({ apiToken }, () => {
+                alert("API Token saved securely!");
+                tokenInput.value = ""; // Clear the input field
+                fetchButton.style.display = "block"; // Show the Fetch Data button
+            });
+        } else {
+            alert("Please enter a valid token!");
+        }
     });
   
     // Trigger manual fetch when clicking Fetch Data
     fetchButton.addEventListener("click", () => {
-      console.log("Fetch Data button clicked");
-      fetchCanvasData();
+        console.log("Fetch Data button clicked");
+        fetchCanvasData();
+    });
+  
+    // Auto-fetch on load
+    chrome.storage.local.get("apiToken", (result) => {
+        if (result.apiToken) {
+            fetchCanvasData();
+        }
     });
 });
 
