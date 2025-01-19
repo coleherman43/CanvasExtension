@@ -122,6 +122,7 @@ function fetchAssignmentsForCourse(courseId, apiToken, course) {
         // Add assignments to course
         assignmentsData.forEach(assignmentData => {
             const assignment = new Assignment(assignmentData.name, assignmentData.due_at, assignmentData.points_possible, assignmentData.id);
+            assignment.subLink = assignmentData.html_url;
             course.addAssignment(assignment);
         });
 
