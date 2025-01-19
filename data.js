@@ -20,7 +20,12 @@ class Course {
       this.title = title;
       this.dueDate = dueDate;
       this.grade = grade;
+      // to differentiate courses with the same title
       this.id = id;
+      // to update as we add links to relevant sites
+      this.materials = [];
+      // for the submission link
+      this.subLink = "";
     }
   }
   
