@@ -5,18 +5,30 @@
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-  <h1>Canvas Extension</h1>
-  <div>
-    <label for="apiToken">Enter API Token:</label>
-    <input type="password" id="apiToken" placeholder="Paste token here" />
-    <button id="saveToken">Save Token</button>
-    <button id="fetchData">Fetch Data</button>
-  </div>
-  
-  <div id="courseTab">Course</div>
-  <div id="assignTab">Assignments</div>
-  <div id="materialTab">Materials</div>
-  </div>
+    <div>
+        <h1>Canvas Extension</h1>
+        <div>
+          <label for="apiToken">Enter API Token:</label>
+          <input type="password" id="apiToken" placeholder="Paste token here" />
+          <button id="saveToken">Save Token</button>
+          <button id="fetchData">Fetch Data</button>
+        </div>
+        <div id="tabs">
+          <h1 class="courseText" data-tab="courseTab">Courses</h1>
+          <div id="courseTab" class="tab-content">
+            <!-- Courses will be dynamically added here -->
+          </div>
+          <h1 class="asnText" data-tab="assignTab">Assignments</h1>
+          <div id="assignTab" class="tab-content">
+            <!-- Assignments will be dynamically added here -->
+          </div>
+          <h1 class="matText" data-tab="materialTab">Materials</h1>
+          <div id="materialTab" class="tab-content">
+            <!-- Materials will be dynamically added here -->
+          </div>
+        </div>
+      </div>
+      
   
   <script src="popup.js" type="module"></script>
 </body>
