@@ -1,7 +1,7 @@
 // This is where we make the interactive JS menu in the popup and import the data from Canvas
 
-import Course, { Assignment } from './models.js';
-
+import {Course, Assignment, CanvasData} from '../data.js';
+console.log("Running CanvasExtension...\n");
 // popup.js
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Function to fetch Canvas data and store in the classes
   async function fetchCanvasData() {
     const API_URL = "https://canvas.uoregon.edu/api/v1/courses";  // Replace with your Canvas domain
-  
+    console.log("Canvas Data Fetch initiated...\n");
     // Retrieve the token from Chrome storage
     chrome.storage.local.get("apiToken", (result) => {
       const apiToken = result.apiToken;
