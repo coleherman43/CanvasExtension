@@ -127,6 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Extract materials if available (adjust field based on API)
             assignment.materials = assignmentData.lock_info || []; // Replace `lock_info` with the field providing materials
+            console.log(`Adding assignment: ${assignment}\n`);
             course.addAssignment(assignment);
         });
 
@@ -222,92 +223,96 @@ function displayAssignments(course) {
 
 // Function to show/hide materials for an assignment
 function displayMaterials(assignment) {
-    const assignmentsContainer = document.getElementById("assignTab");
+    const materialTab = document.getElementById("materialTab");
 
-    // Create a container for the assignment materials
-    let materialsContainer = document.getElementById(`materials-${assignment.id}`);
+    // Clear the default "Materials" text
+    materialTab.textContent = "";
 
-    // If the container doesn't exist, create it
-    if (!materialsContainer) {
-        materialsContainer = document.createElement("div");
-        materialsContainer.id = `materials-${assignment.id}`;
-        materialsContainer.classList.add("materials-container");
+    const materialsContainer = document.createElement("div");
+    materialsContainer.id = `materials-${assignment.id}`;
+    materialsContainer.classList.add("materials-container");
 
-        // Add a header for materials
-        const materialsHeader = document.createElement("h3");
-        materialsHeader.textContent = `Materials for ${assignment.title}`;
-        materialsContainer.appendChild(materialsHeader);
+    // Add a header for the materials
+    const materialsHeader = document.createElement("h3");
+    materialsHeader.textContent = `Materials for ${assignment.title}`;
+    materialsContainer.appendChild(materialsHeader);
 
-        // Create a list to display materials
-        const materialsList = document.createElement("ul");
-        materialsList.classList.add("materials-list");
-        assignment.materials.forEach((material) => {
+    // Create a list for materials
+    const materialsList = document.createElement("ul");
+    materialsList.classList.add("materials-list");
+
+    // Add the submission link
+    if (assignment.subLink) {
+        const submissionItem = document.createElement("li");
+        const submissionLink = document.createElement("a");
+        submissionLink.href = assignment.subLink;
+        submissionLink.textContent = "Submission Link";
+        submissionLink.target = "_blank";
+        submissionItem.appendChild(submissionLink);
+        materialsList.appendChild(submissionItem);
+    }
+
+    // Add existing materials
+    assignment.materials.forEach((material) => {
+        const materialItem = document.createElement("li");
+        const materialLink = document.createElement("a");
+        materialLink.href = material.link;
+        materialLink.textContent = material.title;
+        materialLink.target = "_blank";
+        materialItem.appendChild(materialLink);
+        materialsList.appendChild(materialItem);
+    });
+
+    materialsContainer.appendChild(materialsList);
+
+    // Add a form for adding materials
+    const addMaterialDiv = document.createElement("div");
+    addMaterialDiv.classList.add("add-material");
+
+    const materialTitleInput = document.createElement("input");
+    materialTitleInput.type = "text";
+    materialTitleInput.placeholder = "Material Title";
+    materialTitleInput.classList.add("material-input");
+
+    const materialLinkInput = document.createElement("input");
+    materialLinkInput.type = "url";
+    materialLinkInput.placeholder = "Material Link";
+    materialLinkInput.classList.add("material-input");
+
+    const addMaterialButton = document.createElement("button");
+    addMaterialButton.textContent = "Add Material";
+    addMaterialButton.classList.add("add-material-button");
+
+    addMaterialButton.addEventListener("click", () => {
+        const title = materialTitleInput.value.trim();
+        const link = materialLinkInput.value.trim();
+
+        if (title && link) {
+            const newMaterial = { id: Assignment.generateId(), title, link };
+            assignment.addMaterial(newMaterial);
+
             const materialItem = document.createElement("li");
             const materialLink = document.createElement("a");
-            materialLink.href = material.link;
-            materialLink.textContent = material.title;
+            materialLink.href = link;
+            materialLink.textContent = title;
             materialLink.target = "_blank";
             materialItem.appendChild(materialLink);
             materialsList.appendChild(materialItem);
-        });
-        materialsContainer.appendChild(materialsList);
 
-        // Add a field to add a new material
-        const addMaterialDiv = document.createElement("div");
-        addMaterialDiv.classList.add("add-material");
+            materialTitleInput.value = "";
+            materialLinkInput.value = "";
+        }
+    });
 
-        const materialTitleInput = document.createElement("input");
-        materialTitleInput.type = "text";
-        materialTitleInput.placeholder = "Enter material title";
-        materialTitleInput.classList.add("material-input");
+    addMaterialDiv.appendChild(materialTitleInput);
+    addMaterialDiv.appendChild(materialLinkInput);
+    addMaterialDiv.appendChild(addMaterialButton);
+    materialsContainer.appendChild(addMaterialDiv);
 
-        const materialLinkInput = document.createElement("input");
-        materialLinkInput.type = "url";
-        materialLinkInput.placeholder = "Enter material link";
-        materialLinkInput.classList.add("material-input");
-
-        const addMaterialButton = document.createElement("button");
-        addMaterialButton.textContent = "Add Material";
-        addMaterialButton.classList.add("add-material-button");
-
-        addMaterialButton.addEventListener("click", () => {
-            const title = materialTitleInput.value.trim();
-            const link = materialLinkInput.value.trim();
-
-            if (title && link) {
-                // Add new material to assignment
-                const newMaterial = { title, link };
-                assignment.materials.push(newMaterial);
-
-                // Add new material to the list in the UI
-                const materialItem = document.createElement("li");
-                const materialLink = document.createElement("a");
-                materialLink.href = link;
-                materialLink.textContent = title;
-                materialLink.target = "_blank";
-                materialItem.appendChild(materialLink);
-                materialsList.appendChild(materialItem);
-
-                // Clear input fields
-                materialTitleInput.value = "";
-                materialLinkInput.value = "";
-            } else {
-                alert("Please fill out both the title and link fields!");
-            }
-        });
-
-        addMaterialDiv.appendChild(materialTitleInput);
-        addMaterialDiv.appendChild(materialLinkInput);
-        addMaterialDiv.appendChild(addMaterialButton);
-        materialsContainer.appendChild(addMaterialDiv);
-
-        assignmentsContainer.appendChild(materialsContainer);
-    } else {
-        // If the container already exists, toggle visibility
-        materialsContainer.style.display =
-            materialsContainer.style.display === "none" ? "block" : "none";
-    }
+    materialTab.appendChild(materialsContainer);
 }
+
+
 
 
 
