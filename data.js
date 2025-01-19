@@ -16,10 +16,10 @@ class Course {
   }
   
   class Assignment {
-    constructor(title, dueDate, grade, id) {
+    constructor(title, dueDate, value, id) {
       this.title = title;
       this.dueDate = dueDate;
-      this.grade = grade;
+      this.value = value;
       // to differentiate courses with the same title
       this.id = id;
       // to update as we add links to relevant sites
