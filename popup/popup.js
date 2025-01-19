@@ -129,28 +129,3 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   
   
-
-function openMenu() {
-    // close all sections
-
-    // change display to list courses
-}
-
-function openCourse(course) {
-    // close all sections
-
-    // change the display to list assignments of course and title
-
-}
-
-function openAssignment(assignment) {
-    // close all sections
-
-    // change display to list materials and assignment title
-
-}
-
-function closeMenus() {
-    // close all menus (set them to hidden)
-
-}
