@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   
   // Function to fetch Canvas data and store in the classes
-  async function fetchCanvasData() {
+async function fetchCanvasData() {
     const API_URL = "https://canvas.uoregon.edu/api/v1/courses";  // Get courses first
     console.log("Canvas Data Fetch initiated...\n");
   
@@ -95,37 +95,53 @@ document.addEventListener("DOMContentLoaded", () => {
           console.error("Error fetching Canvas data:", error);
         });
     });
-  }
+}
   
   // Function to fetch assignments for a specific course
-  function fetchAssignmentsForCourse(courseId, apiToken, course) {
+function fetchAssignmentsForCourse(courseId, apiToken, course) {
     const ASSIGNMENTS_URL = `https://canvas.uoregon.edu/api/v1/courses/${courseId}/assignments`;  // Get assignments for the course
-  
+
     fetch(ASSIGNMENTS_URL, {
-      headers: {
+        headers: {
         Authorization: `Bearer ${apiToken}`,
-      },
+        },
     })
-      .then((response) => {
+    .then((response) => {
         if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+            throw new Error(`HTTP error! Status: ${response.status}`);
         }
         return response.json();
-      })
-      .then((assignmentsData) => {
+     })
+    .then((assignmentsData) => {
         console.log(`Assignments for Course ${courseId}:`, assignmentsData);
-  
+
         // Add assignments to course
         assignmentsData.forEach(assignmentData => {
-          const assignment = new Assignment(assignmentData.name, assignmentData.due_at, assignmentData.points_possible, assignmentData.id);
-          course.addAssignment(assignment);
+            const assignment = new Assignment(assignmentData.name, assignmentData.due_at, assignmentData.points_possible, assignmentData.id);
+            course.addAssignment(assignment);
         });
-  
+
         console.log(course); // To see the course with assignments
-      })
-      .catch((error) => {
+    })
+    .catch((error) => {
         console.error(`Error fetching assignments for course ${courseId}:`, error);
-      });
-  }
+    });
+}
   
-  
+function populateDivs() {
+    populateClasses();
+    populateAssignments();
+    populateMaterials();
+}
+
+function populateClasses() {
+
+}
+
+function populateAssignments() {
+
+}
+
+function populateMaterials() {
+    
+}
