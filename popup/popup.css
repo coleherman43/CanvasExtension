@@ -6,12 +6,18 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #f4f7fc;
+    background-color: #d9d9d9;
     width: 400px; /* Set a fixed width for the popup */
     min-width: 400px; /* Ensure the popup doesn't shrink below this width */
     height: auto;
     max-height: 500px; /* Limit the height of the popup */
     overflow-y: auto; /* Allow scrolling if content overflows */
+    border-radius: 12px; /* This rounds the corners of the popup content */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: adds a soft shadow to the popup */
+}
+
+div, .course-table, .assignment-table {
+    border-radius: 8px !important; /* Apply rounded corners to table and div containers */
 }
 
 /* Add some padding and center the content */
@@ -112,7 +118,7 @@ button:hover {
 }
 
 .course-table th {
-    background-color: #007bff;
+    background-color: #000000;
     color: white;
 }
 
@@ -135,7 +141,7 @@ button:hover {
 }
 
 .assignment-table th {
-    background-color: #007bff;
+    background-color: #000000;
     color: white;
 }
 
@@ -150,7 +156,7 @@ button:hover {
     display: inline-flex; /* Use inline-flex for button layout */
     width: 80%; /* Set button width to match the input field */
     padding: 10px;
-    background-color: #007bff;
+    background-color: #000000;
     color: white;
     border: none;
     text-align: center; /* Align text to the center */
@@ -159,4 +165,50 @@ button:hover {
     margin: 10px 0; /* Add margin between buttons */
     justify-content: center; /* Ensure text is horizontally centered */
     align-items: center; /* Center the text vertically */
+}
+
+/* Assignment Button */
+.assignment-button {
+    background-color: #f0f0f0;
+    color: black;
+    border: 1px solid #ccc;
+    padding: 10px 15px;
+    cursor: pointer;
+    text-align: center;
+    width: 100%;
+    max-width: 300px;
+    margin: 5px 0;
+    display: inline-block;
+    min-height: 50px;
+    height: auto;
+    box-sizing: border-box;
+}
+
+.assignment-button:hover {
+    background-color: #e0e0e0;
+}
+
+/* Materials container */
+.materials-container {
+    margin-top: 10px;
+    padding-left: 20px;
+    display: none; /* Hidden by default */
+}
+
+.materials-container ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.materials-container li {
+    margin: 5px 0;
+}
+
+.materials-container a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.materials-container a:hover {
+    text-decoration: underline;
 }

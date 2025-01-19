@@ -178,47 +178,54 @@ function displayAssignments(course) {
     const assignmentsContainer = document.getElementById("assignTab");
     assignmentsContainer.innerHTML = "";  // Clear previous content
 
+    // Check if the course has assignments
+    if (!course.assignments || course.assignments.length === 0) {
+        assignmentsContainer.innerHTML = "<p>No assignments available for this course.</p>";
+        return;
+    }
+
     const assignmentsHeader = document.createElement("h2");
     assignmentsHeader.textContent = `Assignments for ${course.id}`;
     assignmentsContainer.appendChild(assignmentsHeader);
 
-    // Create a table for assignments
-    const assignmentsTable = document.createElement("table");
-    assignmentsTable.classList.add("assignment-table");
-
-    // Add table headers
-    const headerRow = document.createElement("tr");
-    const header1 = document.createElement("th");
-    header1.textContent = "Assignment";
-    const header2 = document.createElement("th");
-    header2.textContent = "Due Date";
-    headerRow.appendChild(header1);
-    headerRow.appendChild(header2);
-    assignmentsTable.appendChild(headerRow);
-
-    // Populate the table with assignments
+    // Create a list of assignments
     course.assignments.forEach(assignment => {
-        const row = document.createElement("tr");
+        const assignmentButton = document.createElement("button");
+        assignmentButton.textContent = `${assignment.title} - Due: ${assignment.dueDate}`;
+        assignmentButton.classList.add("assignment-button");
 
-        const titleCell = document.createElement("td");
-        titleCell.textContent = assignment.title;
-        row.appendChild(titleCell);
+        // Add event listener to show materials when clicked
+        assignmentButton.addEventListener("click", () => {
+            toggleAssignmentMaterials(assignment);
+        });
 
-        const dueDateCell = document.createElement("td");
-        dueDateCell.textContent = assignment.dueDate;
-        row.appendChild(dueDateCell);
-
-        assignmentsTable.appendChild(row);
+        assignmentsContainer.appendChild(assignmentButton);
     });
 
-    // Append the assignments table to the assignments container
-    assignmentsContainer.appendChild(assignmentsTable);
-
-    // Make sure the assignments tab is visible
+    // Show the assignments tab
     assignmentsContainer.style.display = "block";
 }
 
+// Function to show/hide materials for an assignment
+function toggleAssignmentMaterials(assignment) {
+    let materialsContainer = document.getElementById(`materials-${assignment.id}`);
 
+    // If materials container doesn't exist, create it
+    if (!materialsContainer) {
+        materialsContainer = document.createElement("div");
+        materialsContainer.id = `materials-${assignment.id}`;
+        materialsContainer.classList.add("materials-container");
+
+        // Create materials list
+        const materialsList = createMaterialsList(assignment);
+
+        materialsContainer.appendChild(materialsList);
+        document.getElementById("assignTab").appendChild(materialsContainer);
+    } else {
+        // Toggle visibility of materials container
+        materialsContainer.style.display = (materialsContainer.style.display === "none") ? "block" : "none";
+    }
+}
 
 // Function to create materials list for each assignment
 function createMaterialsList(assignment) {
