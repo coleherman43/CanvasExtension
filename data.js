@@ -20,7 +20,7 @@ class Course {
 }
   
 class Assignment {
-    constructor(title, dueDate, value) {
+    constructor(title, dueDate, value, subLink="") {
         this.title = title;
         this.dueDate = dueDate;
         this.value = value;
@@ -29,7 +29,7 @@ class Assignment {
         // to update as we add links to relevant sites
         this.materials = [];
         // for the submission link
-        this.subLink = "";
+        this.subLink = subLink;
     }
 
     updateSubLink(link) {

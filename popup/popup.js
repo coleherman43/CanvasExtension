@@ -127,6 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Extract materials if available (adjust field based on API)
             assignment.materials = assignmentData.lock_info || []; // Replace `lock_info` with the field providing materials
+            console.log(`Adding assignment: ${assignment}\n`);
             course.addAssignment(assignment);
         });
 
@@ -241,6 +242,19 @@ function displayMaterials(assignment) {
         // Create a list to display materials
         const materialsList = document.createElement("ul");
         materialsList.classList.add("materials-list");
+
+        // Add submission link first, if it exists
+        if (assignment.subLink) {
+            const submissionItem = document.createElement("li");
+            const submissionLink = document.createElement("a");
+            submissionLink.href = assignment.subLink;
+            submissionLink.textContent = "Submission Link";
+            submissionLink.target = "_blank";
+            submissionItem.appendChild(submissionLink);
+            materialsList.appendChild(submissionItem);
+        }
+
+        // Add other materials
         assignment.materials.forEach((material) => {
             const materialItem = document.createElement("li");
             const materialLink = document.createElement("a");
@@ -276,8 +290,8 @@ function displayMaterials(assignment) {
 
             if (title && link) {
                 // Add new material to assignment
-                const newMaterial = { title, link };
-                assignment.materials.push(newMaterial);
+                const newMaterial = { id: Assignment.generateId(), title, link };
+                assignment.addMaterial(newMaterial);
 
                 // Add new material to the list in the UI
                 const materialItem = document.createElement("li");
@@ -308,6 +322,7 @@ function displayMaterials(assignment) {
             materialsContainer.style.display === "none" ? "block" : "none";
     }
 }
+
 
 
 
