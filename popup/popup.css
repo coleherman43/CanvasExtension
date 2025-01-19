@@ -190,25 +190,37 @@ button:hover {
 
 /* Materials container */
 .materials-container {
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.materials-list {
+    list-style: none;
+    padding: 0;
+}
+
+.material-input {
+    margin: 5px;
+    padding: 5px;
+    width: 45%;
+}
+
+.add-material {
     margin-top: 10px;
-    padding-left: 20px;
-    display: none; /* Hidden by default */
 }
 
-.materials-container ul {
-    list-style-type: none;
-    padding-left: 0;
+.add-material-button {
+    margin-left: 5px;
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
 }
 
-.materials-container li {
-    margin: 5px 0;
-}
-
-.materials-container a {
-    color: #007bff;
-    text-decoration: none;
-}
-
-.materials-container a:hover {
-    text-decoration: underline;
+.add-material-button:hover {
+    background-color: #0056b3;
 }

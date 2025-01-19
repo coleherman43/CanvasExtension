@@ -50,64 +50,58 @@ document.addEventListener("DOMContentLoaded", () => {
 
   
   // Function to fetch Canvas data and store in the classes
-async function fetchCanvasData() {
-    const API_URL = "https://canvas.uoregon.edu/api/v1/courses?enrollment_state=active";  // Get courses first
+  async function fetchCanvasData() {
+    const API_URL = "https://canvas.uoregon.edu/api/v1/courses?enrollment_state=active";
     console.log("Canvas Data Fetch initiated...\n");
-  
-    // Retrieve the token from Chrome storage
-    chrome.storage.local.get("apiToken", (result) => {
-      const apiToken = result.apiToken;
-  
-      if (!apiToken) {
-        alert("No API token found! Please set it first.");
-        return;
-      }
-  
-      // Fetch data from Canvas API
-      fetch(API_URL, {
-        headers: {
-          Authorization: `Bearer ${apiToken}`,
-        },
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-          return response.json();
-        })
-        .then((data) => {
-          console.log("Fetched Canvas Data:", data); // Log the fetched course data
-  
-          const canvasData = new CanvasData();
-  
-          // Loop over courses and fetch assignments for each one
-          data.forEach(courseData => {
-            const course = new Course(courseData.id, courseData.name);
-  
-            // Now fetch assignments for each course
-            fetchAssignmentsForCourse(courseData.id, apiToken, course);
-  
-            canvasData.addCourse(course);
-          });
-  
-          // At this point, `canvasData` holds all the courses (with no assignments yet)
-            console.log(canvasData);  // For testing
-          // Pass the canvasData to renderCourses to display the data
+
+    chrome.storage.local.get("apiToken", async (result) => {
+        const apiToken = result.apiToken;
+
+        if (!apiToken) {
+            alert("No API token found! Please set it first.");
+            return;
+        }
+
+        try {
+            const response = await fetch(API_URL, {
+                headers: {
+                    Authorization: `Bearer ${apiToken}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log("Fetched Canvas Data:", data);
+
+            const canvasData = new CanvasData();
+            const assignmentPromises = data.map(async (courseData) => {
+                const course = new Course(courseData.id, courseData.name);
+                await fetchAssignmentsForCourse(courseData.id, apiToken, course);
+                canvasData.addCourse(course);
+            });
+
+            // Wait for all assignments to load
+            await Promise.all(assignmentPromises);
+
+            console.log("All assignments loaded:", canvasData);
             renderCourses(canvasData);
-        })
-        .catch((error) => {
-          console.error("Error fetching Canvas data:", error);
-        });
+        } catch (error) {
+            console.error("Error fetching Canvas data:", error);
+        }
     });
 }
+
   
   // Function to fetch assignments for a specific course
-function fetchAssignmentsForCourse(courseId, apiToken, course) {
-    const ASSIGNMENTS_URL = `https://canvas.uoregon.edu/api/v1/courses/${courseId}/assignments`;  // Get assignments for the course
+  function fetchAssignmentsForCourse(courseId, apiToken, course) {
+    const ASSIGNMENTS_URL = `https://canvas.uoregon.edu/api/v1/courses/${courseId}/assignments`;
 
     fetch(ASSIGNMENTS_URL, {
         headers: {
-        Authorization: `Bearer ${apiToken}`,
+            Authorization: `Bearer ${apiToken}`,
         },
     })
     .then((response) => {
@@ -115,23 +109,35 @@ function fetchAssignmentsForCourse(courseId, apiToken, course) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         return response.json();
-     })
+    })
     .then((assignmentsData) => {
         console.log(`Assignments for Course ${courseId}:`, assignmentsData);
 
-        // Add assignments to course
-        assignmentsData.forEach(assignmentData => {
-            const assignment = new Assignment(assignmentData.name, assignmentData.due_at, assignmentData.points_possible, assignmentData.id);
+        // Add assignments to the course
+        assignmentsData.forEach((assignmentData) => {
+            const assignment = new Assignment(
+                assignmentData.name, 
+                assignmentData.due_at, 
+                assignmentData.points_possible, 
+                assignmentData.id
+            );
+
+            // Include the assignment's submission link
             assignment.subLink = assignmentData.html_url;
+
+            // Extract materials if available (adjust field based on API)
+            assignment.materials = assignmentData.lock_info || []; // Replace `lock_info` with the field providing materials
             course.addAssignment(assignment);
         });
 
-        console.log(course); // To see the course with assignments
+        console.log(`Updated Course with Assignments:`, course);
     })
     .catch((error) => {
         console.error(`Error fetching assignments for course ${courseId}:`, error);
     });
 }
+
+
   
 // Function to render all courses as a 2x2 table
 function renderCourses(canvasData) {
@@ -177,7 +183,7 @@ function renderCourses(canvasData) {
 // Function to display assignments for a clicked course
 function displayAssignments(course) {
     const assignmentsContainer = document.getElementById("assignTab");
-    assignmentsContainer.innerHTML = "";  // Clear previous content
+    assignmentsContainer.innerHTML = ""; // Clear previous content
 
     // Check if the course has assignments
     if (!course.assignments || course.assignments.length === 0) {
@@ -190,43 +196,120 @@ function displayAssignments(course) {
     assignmentsContainer.appendChild(assignmentsHeader);
 
     // Create a list of assignments
-    course.assignments.forEach(assignment => {
+    course.assignments.forEach((assignment) => {
+        const assignmentDiv = document.createElement("div");
+        assignmentDiv.classList.add("assignment-item");
+
+        // Create a button for the assignment
         const assignmentButton = document.createElement("button");
-        assignmentButton.textContent = `${assignment.title} - Due: ${assignment.dueDate}`;
+        assignmentButton.textContent = `${assignment.title} - Due: ${assignment.dueDate || "No Due Date"}`;
         assignmentButton.classList.add("assignment-button");
 
-        // Add event listener to show materials when clicked
+        // Add click event listener to toggle materials display
         assignmentButton.addEventListener("click", () => {
-            toggleAssignmentMaterials(assignment);
+            console.log(`Assignment button clicked for: ${assignment.title}`);
+            displayMaterials(assignment);
         });
 
-        assignmentsContainer.appendChild(assignmentButton);
+        assignmentDiv.appendChild(assignmentButton);
+        assignmentsContainer.appendChild(assignmentDiv);
     });
 
-    // Show the assignments tab
-    assignmentsContainer.style.display = "block";
+    assignmentsContainer.style.display = "block"; // Show the assignments tab
 }
 
+
+
 // Function to show/hide materials for an assignment
-function toggleAssignmentMaterials(assignment) {
+function displayMaterials(assignment) {
+    const assignmentsContainer = document.getElementById("assignTab");
+
+    // Create a container for the assignment materials
     let materialsContainer = document.getElementById(`materials-${assignment.id}`);
 
-    // If materials container doesn't exist, create it
+    // If the container doesn't exist, create it
     if (!materialsContainer) {
         materialsContainer = document.createElement("div");
         materialsContainer.id = `materials-${assignment.id}`;
         materialsContainer.classList.add("materials-container");
 
-        // Create materials list
-        const materialsList = createMaterialsList(assignment);
+        // Add a header for materials
+        const materialsHeader = document.createElement("h3");
+        materialsHeader.textContent = `Materials for ${assignment.title}`;
+        materialsContainer.appendChild(materialsHeader);
 
+        // Create a list to display materials
+        const materialsList = document.createElement("ul");
+        materialsList.classList.add("materials-list");
+        assignment.materials.forEach((material) => {
+            const materialItem = document.createElement("li");
+            const materialLink = document.createElement("a");
+            materialLink.href = material.link;
+            materialLink.textContent = material.title;
+            materialLink.target = "_blank";
+            materialItem.appendChild(materialLink);
+            materialsList.appendChild(materialItem);
+        });
         materialsContainer.appendChild(materialsList);
-        document.getElementById("assignTab").appendChild(materialsContainer);
+
+        // Add a field to add a new material
+        const addMaterialDiv = document.createElement("div");
+        addMaterialDiv.classList.add("add-material");
+
+        const materialTitleInput = document.createElement("input");
+        materialTitleInput.type = "text";
+        materialTitleInput.placeholder = "Enter material title";
+        materialTitleInput.classList.add("material-input");
+
+        const materialLinkInput = document.createElement("input");
+        materialLinkInput.type = "url";
+        materialLinkInput.placeholder = "Enter material link";
+        materialLinkInput.classList.add("material-input");
+
+        const addMaterialButton = document.createElement("button");
+        addMaterialButton.textContent = "Add Material";
+        addMaterialButton.classList.add("add-material-button");
+
+        addMaterialButton.addEventListener("click", () => {
+            const title = materialTitleInput.value.trim();
+            const link = materialLinkInput.value.trim();
+
+            if (title && link) {
+                // Add new material to assignment
+                const newMaterial = { title, link };
+                assignment.materials.push(newMaterial);
+
+                // Add new material to the list in the UI
+                const materialItem = document.createElement("li");
+                const materialLink = document.createElement("a");
+                materialLink.href = link;
+                materialLink.textContent = title;
+                materialLink.target = "_blank";
+                materialItem.appendChild(materialLink);
+                materialsList.appendChild(materialItem);
+
+                // Clear input fields
+                materialTitleInput.value = "";
+                materialLinkInput.value = "";
+            } else {
+                alert("Please fill out both the title and link fields!");
+            }
+        });
+
+        addMaterialDiv.appendChild(materialTitleInput);
+        addMaterialDiv.appendChild(materialLinkInput);
+        addMaterialDiv.appendChild(addMaterialButton);
+        materialsContainer.appendChild(addMaterialDiv);
+
+        assignmentsContainer.appendChild(materialsContainer);
     } else {
-        // Toggle visibility of materials container
-        materialsContainer.style.display = (materialsContainer.style.display === "none") ? "block" : "none";
+        // If the container already exists, toggle visibility
+        materialsContainer.style.display =
+            materialsContainer.style.display === "none" ? "block" : "none";
     }
 }
+
+
 
 // Function to create materials list for each assignment
 function createMaterialsList(assignment) {
@@ -243,3 +326,4 @@ function createMaterialsList(assignment) {
 
     return materialsList;
 }
+
