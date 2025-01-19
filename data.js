@@ -28,12 +28,16 @@ class Course {
       this.subLink = "";
     }
 
+    updateSubLink(link) {
+        this.subLink = link;
+    }
+
     addMaterial(material) {
-        this.materials.push(material)
+        this.materials.push(material);
     }
 
     removeMaterial(materialId) {
-        this.materials.filter(material => material.id != materialId)
+        this.materials.filter(material => material.id != materialId);
     }
   }
   
