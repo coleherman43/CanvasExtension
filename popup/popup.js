@@ -179,19 +179,45 @@ function displayAssignments(course) {
     assignmentsContainer.innerHTML = "";  // Clear previous content
 
     const assignmentsHeader = document.createElement("h2");
-    assignmentsHeader.textContent = `Assignments for ${course.name}`;
+    assignmentsHeader.textContent = `Assignments for ${course.id}`;
     assignmentsContainer.appendChild(assignmentsHeader);
 
-    // Create a list of assignments
-    const assignmentsList = document.createElement("ul");
+    // Create a table for assignments
+    const assignmentsTable = document.createElement("table");
+    assignmentsTable.classList.add("assignment-table");
+
+    // Add table headers
+    const headerRow = document.createElement("tr");
+    const header1 = document.createElement("th");
+    header1.textContent = "Assignment";
+    const header2 = document.createElement("th");
+    header2.textContent = "Due Date";
+    headerRow.appendChild(header1);
+    headerRow.appendChild(header2);
+    assignmentsTable.appendChild(headerRow);
+
+    // Populate the table with assignments
     course.assignments.forEach(assignment => {
-        const assignmentItem = document.createElement("li");
-        assignmentItem.textContent = `${assignment.title} - Due: ${assignment.dueDate}`;
-        assignmentsList.appendChild(assignmentItem);
+        const row = document.createElement("tr");
+
+        const titleCell = document.createElement("td");
+        titleCell.textContent = assignment.title;
+        row.appendChild(titleCell);
+
+        const dueDateCell = document.createElement("td");
+        dueDateCell.textContent = assignment.dueDate;
+        row.appendChild(dueDateCell);
+
+        assignmentsTable.appendChild(row);
     });
 
-    assignmentsContainer.appendChild(assignmentsList);
+    // Append the assignments table to the assignments container
+    assignmentsContainer.appendChild(assignmentsTable);
+
+    // Make sure the assignments tab is visible
+    assignmentsContainer.style.display = "block";
 }
+
 
 
 // Function to create materials list for each assignment
