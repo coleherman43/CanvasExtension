@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Check if a token is already saved and adjust Fetch Data button visibility
     chrome.storage.local.get("apiToken", (result) => {
         if (result.apiToken) {
-            fetchButton.style.display = "block"; // Show the Fetch Data button if the token exists
+            fetchButton.style.display = "flex"; // Show the Fetch Data button if the token exists
         }
     });
   
@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
             chrome.storage.local.set({ apiToken }, () => {
                 alert("API Token saved securely!");
                 tokenInput.value = ""; // Clear the input field
-                fetchButton.style.display = "block"; // Show the Fetch Data button
+                fetchButton.style.display = "center"; // Show the Fetch Data button
             });
         } else {
             alert("Please enter a valid token!");
