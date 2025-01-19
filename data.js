@@ -13,19 +13,23 @@ class Course {
     removeAssignment(assignmentId) {
       this.assignments = this.assignments.filter(assignment => assignment.id !== assignmentId);
     }
-  }
+
+    getAssignments() {
+        return this.assignments;
+    }
+}
   
-  class Assignment {
+class Assignment {
     constructor(title, dueDate, value, id) {
-      this.title = title;
-      this.dueDate = dueDate;
-      this.value = value;
-      // to differentiate courses with the same title
-      this.id = id;
-      // to update as we add links to relevant sites
-      this.materials = [];
-      // for the submission link
-      this.subLink = "";
+        this.title = title;
+        this.dueDate = dueDate;
+        this.value = value;
+        // to differentiate courses with the same title
+        this.id = id;
+        // to update as we add links to relevant sites
+        this.materials = [];
+        // for the submission link
+        this.subLink = "";
     }
 
     updateSubLink(link) {
@@ -37,11 +41,29 @@ class Course {
     }
 
     removeMaterial(materialId) {
-        this.materials.filter(material => material.id != materialId);
+        this.materials = this.materials.filter(material => material.id != materialId);
     }
-  }
+
+}
   
-  class CanvasData {
+class Material {
+    constructor(link, title) {
+        if (!/^https?:\/\/.+$/.test(link)) {
+            throw new Error("Invalid link format");
+        }
+        this.link = link;
+        this.title = title;
+        this.id = generateId();
+    }
+
+    static generateId() {
+        return `mat_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    }
+    
+}
+  
+
+class CanvasData {
     constructor() {
       this.courses = [];
     }
@@ -53,8 +75,11 @@ class Course {
     getCourseById(courseId) {
       return this.courses.find(course => course.id === courseId);
     }
+
+    removeCourse(courseId) {
+        this.courses = this.courses.filter(course => course.id !== courseId);
+    }
+}
   
-    // Other methods to manage courses and assignments can be added here.
-  }
-  
-  export {CanvasData, Course, Assignment};
+
+  export {CanvasData, Course, Assignment, Material};

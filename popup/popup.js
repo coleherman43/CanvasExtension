@@ -1,6 +1,6 @@
 // This is where we make the interactive JS menu in the popup and import the data from Canvas
 
-import {Course, Assignment, CanvasData} from '../data.js';
+import {Course, Assignment, CanvasData, Material} from '../data.js';
 console.log("Running CanvasExtension...\n");
 
 document.addEventListener("DOMContentLoaded", () => {
