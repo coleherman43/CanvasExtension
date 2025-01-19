@@ -27,6 +27,14 @@ class Course {
       // for the submission link
       this.subLink = "";
     }
+
+    addMaterial(material) {
+        this.materials.push(material)
+    }
+
+    removeMaterial(materialId) {
+        this.materials.filter(material => material.id != materialId)
+    }
   }
   
   class CanvasData {
