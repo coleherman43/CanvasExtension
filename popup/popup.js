@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
         // Add assignments to course
         assignmentsData.forEach(assignmentData => {
-          const assignment = new Assignment(assignmentData.id, assignmentData.name, assignmentData.due_at);
+          const assignment = new Assignment(assignmentData.name, assignmentData.due_at, assignmentData.points_possible, assignmentData.id);
           course.addAssignment(assignment);
         });
   
